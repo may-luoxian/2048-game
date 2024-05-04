@@ -68,8 +68,21 @@ export const GameStyle = styled.div`
     top: 45%;
     left: 50%;
     width: 250px;
+    height: 250px;
     text-align: center;
     transform: translateX(-50%);
+  }
+  #startGameBtn {
+    position: absolute;
+    top: 200px;
+    width: 100px;
+    padding: 10px;
+    font-size: 16px;
+    background: #8f7a66;
+    border-radius: 10px;
+    text-decoration: none;
+    transform: translate(-50%, -50%);
+    cursor: pointer;
   }
 `;
 

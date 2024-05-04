@@ -109,7 +109,12 @@ export default function Game2048({ gameState, board, onRef }) {
           });
         })}
       </div>
-      {gameState === "gameover" ? <div id="gameover">GAME OVER</div> : null}
+      {gameState === "gameover" ? (
+        <div id="gameover">
+          <span>GAME OVER</span>
+          <a id="startGameBtn">Restart</a>
+        </div>
+      ) : null}
     </>
   );
 }

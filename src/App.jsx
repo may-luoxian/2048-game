@@ -40,28 +40,28 @@ function App() {
     }
     // let initBoard = [
     //   [
-    //     { id: uuid(), number: 0 },
-    //     { id: uuid(), number: 0 },
-    //     { id: uuid(), number: 0 },
-    //     { id: uuid(), number: 0 },
-    //   ],
-    //   [
-    //     { id: uuid(), number: 0 },
-    //     { id: uuid(), number: 0 },
-    //     { id: uuid(), number: 0 },
-    //     { id: uuid(), number: 0 },
-    //   ],
-    //   [
-    //     { id: uuid(), number: 0 },
+    //     { id: uuid(), number: 2 },
     //     { id: uuid(), number: 4 },
     //     { id: uuid(), number: 2 },
-    //     { id: uuid(), number: 2 },
+    //     { id: uuid(), number: 8 },
+    //   ],
+    //   [
+    //     { id: uuid(), number: 64 },
+    //     { id: uuid(), number: 32 },
+    //     { id: uuid(), number: 8 },
+    //     { id: uuid(), number: 4 },
     //   ],
     //   [
     //     { id: uuid(), number: 0 },
-    //     { id: uuid(), number: 0 },
-    //     { id: uuid(), number: 0 },
-    //     { id: uuid(), number: 0 },
+    //     { id: uuid(), number: 16 },
+    //     { id: uuid(), number: 1024 },
+    //     { id: uuid(), number: 2048 },
+    //   ],
+    //   [
+    //     { id: uuid(), number: 4 },
+    //     { id: uuid(), number: 32 },
+    //     { id: uuid(), number: 8 },
+    //     { id: uuid(), number: 4 },
     //   ],
     // ];
     generateTwoNumber(initBoard);
@@ -94,6 +94,7 @@ function App() {
    */
   function generateOneNumber(board) {
     let vacancys = nospace(board);
+    console.log(vacancys);
     if (vacancys.length >= 1) {
       let index = parseInt(Math.random() * vacancys.length);
       let vacancy = vacancys.splice(index, 1)[0];
@@ -147,12 +148,11 @@ function App() {
         break;
     }
     if (isMoveSuccess) {
-      setTimeout(() => {
-        setBoard((board) => {
-          generateOneNumber(board);
-          return board;
-        });
-      }, 225);
+      setBoard((board) => {
+        generateOneNumber(board);
+        gameOver(board);
+        return board;
+      });
     }
   }
 
@@ -193,15 +193,17 @@ function App() {
                   cloneBoard[k][j].number + cloneBoard[i][j].number;
                 cloneBoard[i][j].number = 0;
                 added[k][j] = 1;
+                setScore((score) => {
+                  score += cloneBoard[k][j].number;
+                  return score;
+                });
               }
             }
           }
         }
       }
     }
-    setTimeout(() => {
-      setBoard(cloneBoard);
-    }, 200);
+    setBoard(cloneBoard);
     return true;
   }
 
@@ -235,15 +237,17 @@ function App() {
                   cloneBoard[k][j].number + cloneBoard[i][j].number;
                 cloneBoard[i][j].number = 0;
                 added[k][j] = 1;
+                setScore((score) => {
+                  score += cloneBoard[k][j].number;
+                  return score;
+                });
               }
             }
           }
         }
       }
     }
-    setTimeout(() => {
-      setBoard(cloneBoard);
-    }, 200);
+    setBoard(cloneBoard);
     return true;
   }
 
@@ -277,15 +281,17 @@ function App() {
                   cloneBoard[i][k].number + cloneBoard[i][j].number;
                 cloneBoard[i][j].number = 0;
                 added[i][k] = 1;
+                setScore((score) => {
+                  score += cloneBoard[i][k].number;
+                  return score;
+                });
               }
             }
           }
         }
       }
     }
-    setTimeout(() => {
-      setBoard(cloneBoard);
-    }, 200);
+    setBoard(cloneBoard);
     return true;
   }
 
@@ -319,15 +325,17 @@ function App() {
                   cloneBoard[i][k].number + cloneBoard[i][j].number;
                 cloneBoard[i][j].number = 0;
                 added[i][k] = 1;
+                setScore((score) => {
+                  score += cloneBoard[i][k].number;
+                  return score;
+                });
               }
             }
           }
         }
       }
     }
-    setTimeout(() => {
-      setBoard(cloneBoard);
-    }, 200);
+    setBoard(cloneBoard);
     return true;
   }
 
@@ -416,7 +424,6 @@ function App() {
    * 判断向前元素到目标元素间是否存在障碍物（水平方向）
    */
   function hasHorizontalObstacle(row, col1, col2, board) {
-    console.log(row, col1, col2);
     for (let i = col1 + 1; i < col2; i++) {
       if (board[row][i].number !== 0) {
         return true;
@@ -437,38 +444,49 @@ function App() {
     return added;
   }
 
-  function showMoveAnimate(fromx, fromy, tox, toy) {
-    // let toTop = game2048Ref.current.getPosX(tox);
-    // let toLeft = game2048Ref.current.getPosY(toy);
-    // let fromTop = game2048Ref.current.getPosX(fromx);
-    // let fromLeft = game2048Ref.current.getPosY(fromy);
-    let goalGridCell = document.getElementsByClassName(
-      `grid-cell-${tox}-${toy}`
-    )[0];
-    let toTop = goalGridCell.offsetTop;
-    let toLeft = goalGridCell.offsetLeft;
-    let gridCell = document.getElementsByClassName(
-      `grid-cell-${fromx}-${fromy}`
-    )[0];
-    let fromTop = gridCell.offsetTop;
-    let fromLeft = gridCell.offsetLeft;
-    console.log(fromTop, fromLeft, toTop, toLeft);
+  // function showMoveAnimate(fromx, fromy, tox, toy) {
+  //   // let toTop = game2048Ref.current.getPosX(tox);
+  //   // let toLeft = game2048Ref.current.getPosY(toy);
+  //   // let fromTop = game2048Ref.current.getPosX(fromx);
+  //   // let fromLeft = game2048Ref.current.getPosY(fromy);
+  //   let goalGridCell = document.getElementsByClassName(
+  //     `grid-cell-${tox}-${toy}`
+  //   )[0];
+  //   let toTop = goalGridCell.offsetTop;
+  //   let toLeft = goalGridCell.offsetLeft;
+  //   let gridCell = document.getElementsByClassName(
+  //     `grid-cell-${fromx}-${fromy}`
+  //   )[0];
+  //   let fromTop = gridCell.offsetTop;
+  //   let fromLeft = gridCell.offsetLeft;
+  //   console.log(fromTop, fromLeft, toTop, toLeft);
 
-    let tranLeft = toLeft - fromLeft + "px";
-    let tranTop = toTop - fromTop + "px";
+  //   let tranLeft = toLeft - fromLeft + "px";
+  //   let tranTop = toTop - fromTop + "px";
 
-    gridCell.animate(
-      [
-        {
-          transform: `translate(0px, 0px)`,
-        },
-        { transform: `translate(${tranLeft}, ${tranTop})`, opacity: 0 },
-      ],
-      {
-        duration: 240,
-        iterations: 1,
-      }
-    );
+  //   gridCell.animate(
+  //     [
+  //       {
+  //         transform: `translate(0px, 0px)`,
+  //       },
+  //       { transform: `translate(${tranLeft}, ${tranTop})`, opacity: 0 },
+  //     ],
+  //     {
+  //       duration: 240,
+  //       iterations: 1,
+  //     }
+  //   );
+  // }
+
+  function gameOver(board) {
+    if (
+      !canMoveUp(board) &&
+      !canMoveDown(board) &&
+      !canMoveLeft(board) &&
+      !canMoveRight(board)
+    ) {
+      setGameState("gameover");
+    }
   }
 
   useEffect(() => {
